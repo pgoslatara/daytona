@@ -36,6 +36,7 @@ import {
   ChevronsUpDown,
   Container,
   CreditCard,
+  FlaskConical,
   HardDrive,
   KeyRound,
   ListChecks,
@@ -61,6 +62,8 @@ import { Card, CardHeader, CardTitle } from './ui/card'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from './ui/dropdown-menu'
 import { ScrollArea } from './ui/scroll-area'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from './ui/tooltip'
+import { useFeatureFlagEnabled } from 'posthog-js/react'
+
 interface SidebarProps {
   isBannerVisible: boolean
   billingEnabled: boolean
@@ -85,6 +88,8 @@ export function Sidebar({ isBannerVisible, billingEnabled, version }: SidebarPro
     useSelectedOrganization()
   const { count: organizationInvitationsCount } = useUserOrganizationInvitations()
   const { isInitialized: webhooksInitialized, openAppPortal } = useWebhooks()
+  const organizationExperimentsEnabled = useFeatureFlagEnabled('organization_experiments')
+
   const sidebarItems = useMemo(() => {
     const arr: SidebarItem[] = [
       {
@@ -164,6 +169,22 @@ export function Sidebar({ isBannerVisible, billingEnabled, version }: SidebarPro
     return arr
   }, [authenticatedUserOrganizationMember?.role, selectedOrganization?.personal, webhooksInitialized, openAppPortal])
 
+  const experimentalItems = useMemo(() => {
+    const arr: SidebarItem[] = []
+
+    if (
+      organizationExperimentsEnabled &&
+      authenticatedUserOrganizationMember?.role === OrganizationUserRoleEnum.OWNER
+    ) {
+      arr.push({
+        icon: <FlaskConical size={16} strokeWidth={1.5} />,
+        label: 'Experimental',
+        path: RoutePath.EXPERIMENTAL,
+      })
+    }
+    return arr
+  }, [organizationExperimentsEnabled, authenticatedUserOrganizationMember?.role])
+
   const billingItems = useMemo(() => {
     if (!billingEnabled || authenticatedUserOrganizationMember?.role !== OrganizationUserRoleEnum.OWNER) {
       return []
@@ -193,8 +214,9 @@ export function Sidebar({ isBannerVisible, billingEnabled, version }: SidebarPro
       { label: 'Sandboxes', items: sidebarItems },
       { label: 'Settings', items: settingsItems },
       { label: 'Billing', items: billingItems },
+      { label: 'Experimental', items: experimentalItems },
     ].filter((group) => group.items.length > 0)
-  }, [sidebarItems, settingsItems, billingItems])
+  }, [sidebarItems, settingsItems, billingItems, experimentalItems])
 
   return (
     <SidebarComponent isBannerVisible={isBannerVisible} collapsible="icon">
