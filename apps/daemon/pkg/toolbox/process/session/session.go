@@ -4,6 +4,7 @@
 package session
 
 import (
+	"errors"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -39,7 +40,6 @@ func (s *SessionController) CreateSession(c *gin.Context) {
 		log.Error(err)
 		versionComparison = util.Pointer(1)
 	}
-
 	isLegacy := versionComparison != nil && *versionComparison < 0 && sdkVersion != "0.0.0-dev"
 
 	err = s.sessionService.Create(request.SessionId, isLegacy)
@@ -63,6 +63,11 @@ func (s *SessionController) CreateSession(c *gin.Context) {
 //	@id				DeleteSession
 func (s *SessionController) DeleteSession(c *gin.Context) {
 	sessionId := c.Param("sessionId")
+
+	if sessionId == util.EntrypointSessionID {
+		c.Error(common_errors.NewBadRequestError(errors.New("can't delete entrypoint session")))
+		return
+	}
 
 	err := s.sessionService.Delete(c.Request.Context(), sessionId)
 	if err != nil {
