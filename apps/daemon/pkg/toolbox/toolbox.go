@@ -185,6 +185,8 @@ func (s *Server) Start() error {
 			sessionGroup.DELETE("/:sessionId", sessionController.DeleteSession)
 			sessionGroup.GET("/:sessionId/command/:commandId", sessionController.GetSessionCommand)
 			sessionGroup.GET("/:sessionId/command/:commandId/logs", sessionController.GetSessionCommandLogs)
+			sessionGroup.GET("/entrypoint/logs", sessionController.GetEntrypointLogs)
+			sessionGroup.GET("/entrypoint", sessionController.GetEntrypointSession)
 		}
 
 		// PTY endpoints

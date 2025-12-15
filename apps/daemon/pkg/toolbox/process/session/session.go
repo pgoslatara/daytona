@@ -150,3 +150,23 @@ func (s *SessionController) GetSessionCommand(c *gin.Context) {
 
 	c.JSON(http.StatusOK, CommandToDTO(command))
 }
+
+// GetEntrypointSession godoc
+//
+//	@Summary		Get entrypoint session details
+//	@Description	Get details of an entrypoint session including its commands
+//	@Tags			process
+//	@Produce		json
+//	@Success		200	{object}	SessionDTO
+//	@Router			/process/session/entrypoint [get]
+//
+//	@id				GetEntrypointSession
+func (s *SessionController) GetEntrypointSession(c *gin.Context) {
+	session, err := s.sessionService.Get(util.EntrypointSessionID)
+	if err != nil {
+		c.Error(err)
+		return
+	}
+
+	c.JSON(http.StatusOK, SessionToDTO(session))
+}
