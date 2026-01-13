@@ -15,7 +15,7 @@ export interface InvoicesTableProps {
 
 export interface InvoicesTableActionsProps {
   invoice: Invoice
-  onView: (invoice: Invoice) => void
+  onView?: (invoice: Invoice) => void
 }
 
 export interface InvoicesTableHeaderProps {
