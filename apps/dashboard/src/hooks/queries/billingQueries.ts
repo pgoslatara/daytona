@@ -7,6 +7,7 @@ import { useSelectedOrganization } from '@/hooks/useSelectedOrganization'
 import { OrganizationUserRoleEnum } from '@daytonaio/api-client'
 import { useOrganizationBillingPortalUrlQuery } from './useOrganizationBillingPortalUrlQuery'
 import { useOrganizationEmailsQuery } from './useOrganizationEmailsQuery'
+import { useOrganizationInvoicesQuery } from './useOrganizationInvoicesQuery'
 import { useOrganizationTierQuery } from './useOrganizationTierQuery'
 import { useOrganizationWalletQuery } from './useOrganizationWalletQuery'
 
@@ -38,4 +39,13 @@ export function useOwnerOrganizationEmailsQuery() {
 export function useOwnerBillingPortalUrlQuery() {
   const scope = useSelectedOrgBillingScope()
   return useOrganizationBillingPortalUrlQuery(scope)
+}
+
+export function useOwnerInvoicesQuery(page?: number, perPage?: number) {
+  const scope = useSelectedOrgBillingScope()
+  return useOrganizationInvoicesQuery({
+    ...scope,
+    page,
+    perPage,
+  })
 }

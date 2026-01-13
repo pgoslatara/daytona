@@ -16,3 +16,7 @@ export type AutomaticTopUp = {
   thresholdAmount: number
   targetAmount: number
 }
+
+export interface WalletTopUpRequest {
+  amount: number
+}
