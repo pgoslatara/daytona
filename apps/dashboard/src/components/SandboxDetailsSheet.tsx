@@ -65,7 +65,7 @@ const SandboxDetailsSheet: React.FC<SandboxDetailsSheetProps> = ({
   if (!sandbox) return null
 
   const getLastEvent = (sandbox: Sandbox): { date: Date; relativeTimeString: string } => {
-    return getRelativeTimeString(sandbox.updatedAt)
+    return getRelativeTimeString(sandbox.lastActivityAt)
   }
 
   const copyToClipboard = async (text: string) => {
@@ -247,7 +247,7 @@ const SandboxDetailsSheet: React.FC<SandboxDetailsSheetProps> = ({
             </div>
             <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
               <div>
-                <h3 className="text-sm text-muted-foreground">Last used</h3>
+                <h3 className="text-sm text-muted-foreground">Last Event</h3>
                 <p className="mt-1 text-sm font-medium">{getLastEvent(sandbox).relativeTimeString}</p>
               </div>
               <div>
