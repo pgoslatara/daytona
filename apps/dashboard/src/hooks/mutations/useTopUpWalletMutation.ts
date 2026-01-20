@@ -10,7 +10,7 @@ import { useApi } from '../useApi'
 
 interface TopUpWalletVariables {
   organizationId: string
-  amount: number
+  amountCents: number
 }
 
 export const useTopUpWalletMutation = () => {
@@ -18,7 +18,7 @@ export const useTopUpWalletMutation = () => {
   const queryClient = useQueryClient()
 
   return useMutation<PaymentUrl, unknown, TopUpWalletVariables>({
-    mutationFn: ({ organizationId, amount }) => billingApi.topUpWallet(organizationId, amount),
+    mutationFn: ({ organizationId, amountCents }) => billingApi.topUpWallet(organizationId, amountCents),
     onSuccess: (_data, { organizationId }) => {
       queryClient.invalidateQueries({ queryKey: queryKeys.organization.wallet(organizationId) })
     },

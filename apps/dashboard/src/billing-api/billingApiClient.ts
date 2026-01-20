@@ -149,9 +149,9 @@ export class BillingApiClient {
     await this.axiosInstance.post(`/organization/${organizationId}/invoices/${invoiceId}/void`)
   }
 
-  public async topUpWallet(organizationId: string, amount: number): Promise<PaymentUrl> {
+  public async topUpWallet(organizationId: string, amountCents: number): Promise<PaymentUrl> {
     const response = await this.axiosInstance.post(`/organization/${organizationId}/wallet/top-up`, {
-      amount,
+      amountCents,
     } as WalletTopUpRequest)
     return response.data
   }

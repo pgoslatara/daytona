@@ -18,5 +18,5 @@ export type AutomaticTopUp = {
 }
 
 export interface WalletTopUpRequest {
-  amount: number
+  amountCents: number
 }

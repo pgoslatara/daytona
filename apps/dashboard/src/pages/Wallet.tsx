@@ -223,7 +223,7 @@ const Wallet = () => {
     try {
       const result = await topUpWalletMutation.mutateAsync({
         organizationId: selectedOrganization.id,
-        amount,
+        amountCents: amount * 100,
       })
       window.open(result.url, '_blank')
     } catch (error) {
