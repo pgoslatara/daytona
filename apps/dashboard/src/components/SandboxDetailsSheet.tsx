@@ -251,7 +251,7 @@ const SandboxDetailsSheet: React.FC<SandboxDetailsSheetProps> = ({
                 <p className="mt-1 text-sm font-medium">{getLastEvent(sandbox).relativeTimeString}</p>
               </div>
               <div>
-                <h3 className="text-sm text-muted-foreground">Created at</h3>
+                <h3 className="text-sm text-muted-foreground">Created</h3>
                 <p className="mt-1 text-sm font-medium">{formatTimestamp(sandbox.createdAt)}</p>
               </div>
             </div>

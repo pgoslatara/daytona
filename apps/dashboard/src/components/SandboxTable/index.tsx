@@ -14,7 +14,7 @@ import { AnimatePresence, motion } from 'motion/react'
 import { useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useCommandPaletteActions, useRegisterCommands, type CommandConfig } from '../CommandPalette'
-import { Pagination } from '../Pagination'
+import { CursorPagination } from '../CursorPagination'
 import { TableEmptyState } from '../TableEmptyState'
 import {
   AlertDialog,
@@ -108,10 +108,12 @@ export function SandboxTable({
   handleRefresh,
   isRefreshing,
   onRowClick,
-  pagination,
-  pageCount,
-  totalItems,
-  onPaginationChange,
+  pageSize,
+  hasNextPage,
+  hasPreviousPage,
+  onNextPage,
+  onPreviousPage,
+  onPageSizeChange,
   sorting,
   onSortingChange,
   filters,
@@ -137,9 +139,7 @@ export function SandboxTable({
     getWebTerminalUrl,
     handleCreateSshAccess,
     handleRevokeSshAccess,
-    pagination,
-    pageCount,
-    onPaginationChange,
+    pageSize,
     sorting,
     onSortingChange,
     filters,
@@ -280,12 +280,14 @@ export function SandboxTable({
       </Table>
 
       <div className="flex items-center justify-end relative">
-        <Pagination
+        <CursorPagination
           className="pb-2 pt-6"
-          table={table}
-          selectionEnabled={deletePermitted}
-          entityName="Sandboxes"
-          totalItems={totalItems}
+          pageSize={pageSize}
+          onPageSizeChange={onPageSizeChange}
+          hasNextPage={hasNextPage}
+          hasPreviousPage={hasPreviousPage}
+          onNextPage={onNextPage}
+          onPreviousPage={onPreviousPage}
         />
 
         <AnimatePresence>
