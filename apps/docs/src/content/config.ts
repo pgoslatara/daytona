@@ -321,7 +321,10 @@ export const getSidebarConfig = (
         },
         {
           type: 'link',
-          href: localizePath('/docs/guides/opencode/opencode-web-agent', locale),
+          href: localizePath(
+            '/docs/guides/opencode/opencode-web-agent',
+            locale
+          ),
           label: t('sidebarconfig.opencode'),
           disablePagination: true,
           attrs: {
@@ -390,7 +393,10 @@ export const getSidebarConfig = (
         },
         {
           type: 'link',
-          href: localizePath('/docs/guides/codex/codex-sdk-interactive-terminal-sandbox', locale),
+          href: localizePath(
+            '/docs/guides/codex/codex-sdk-interactive-terminal-sandbox',
+            locale
+          ),
           label: t('sidebarconfig.codex'),
           disablePagination: true,
           attrs: {
@@ -429,7 +435,7 @@ export const getSidebarConfig = (
         },
         {
           type: 'link',
-          href: localizePath('/docs/guides/reinforcement-learning/recursive-language-models', locale),
+          href: localizePath('/docs/guides/recursive-language-models', locale),
           label: t('sidebarconfig.recursiveLms'),
           disablePagination: true,
           attrs: {
