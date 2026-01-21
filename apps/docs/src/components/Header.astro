@@ -75,6 +75,9 @@ const showSearch = algoliaEnabled || import.meta.env.DEV
         </div>
       </div>
       <a href={`/docs/en/guides`}>{Astro.locals.t('header.guides' as any)} </a>
+      <a href="https://www.daytona.io/changelog"
+        >{Astro.locals.t('header.changelog' as any)}
+      </a>
     </div>
     <div class="nav__items_side_menu">
       <a href={import.meta.env.BASE_URL} class="dotfiles-logo">v<Version /> </a>
