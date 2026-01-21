@@ -13,10 +13,23 @@ import { InvoicesTableHeader } from './InvoicesTableHeader'
 import { InvoicesTableProps } from './types'
 import { useInvoicesTable } from './useInvoicesTable'
 
-export function InvoicesTable({ data, loading, onViewInvoice, onRowClick }: InvoicesTableProps) {
+export function InvoicesTable({
+  data,
+  pagination,
+  pageCount,
+  onPaginationChange,
+  loading,
+  onViewInvoice,
+  onVoidInvoice,
+  onRowClick,
+}: InvoicesTableProps) {
   const { table } = useInvoicesTable({
     data,
+    pagination,
+    pageCount,
+    onPaginationChange,
     onViewInvoice,
+    onVoidInvoice,
   })
 
   return (

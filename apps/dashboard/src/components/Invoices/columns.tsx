@@ -39,9 +39,10 @@ const SortableHeader: React.FC<SortableHeaderProps> = ({ column, label, dataStat
 
 interface GetColumnsProps {
   onViewInvoice?: (invoice: Invoice) => void
+  onVoidInvoice?: (invoice: Invoice) => void
 }
 
-export function getColumns({ onViewInvoice }: GetColumnsProps): ColumnDef<Invoice>[] {
+export function getColumns({ onViewInvoice, onVoidInvoice }: GetColumnsProps): ColumnDef<Invoice>[] {
   const columns: ColumnDef<Invoice>[] = [
     {
       id: 'number',
@@ -178,7 +179,7 @@ export function getColumns({ onViewInvoice }: GetColumnsProps): ColumnDef<Invoic
       cell: ({ row }) => {
         return (
           <div>
-            <InvoicesTableActions invoice={row.original} onView={onViewInvoice} />
+            <InvoicesTableActions invoice={row.original} onView={onViewInvoice} onVoid={onVoidInvoice} />
           </div>
         )
       },

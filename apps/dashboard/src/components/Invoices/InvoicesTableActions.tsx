@@ -3,12 +3,29 @@
  * SPDX-License-Identifier: AGPL-3.0
  */
 
-import { Download, Eye, MoreVertical } from 'lucide-react'
+import { MoreHorizontalIcon } from 'lucide-react'
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from '../ui/alert-dialog'
 import { Button } from '../ui/button'
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '../ui/dropdown-menu'
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '../ui/dropdown-menu'
 import { InvoicesTableActionsProps } from './types'
 
-export function InvoicesTableActions({ invoice, onView }: InvoicesTableActionsProps) {
+export function InvoicesTableActions({ invoice, onView, onVoid }: InvoicesTableActionsProps) {
   const handleView = () => {
     onView?.(invoice)
   }
@@ -19,26 +36,48 @@ export function InvoicesTableActions({ invoice, onView }: InvoicesTableActionsPr
     }
   }
 
+  const handleVoid = () => {
+    onVoid?.(invoice)
+  }
+
   return (
     <div className="flex items-center gap-1">
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
-            <MoreVertical className="h-4 w-4" aria-label="Open menu" />
+            <MoreHorizontalIcon className="h-4 w-4" aria-label="Open menu" />
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
-          {onView && (
-            <DropdownMenuItem onClick={handleView}>
-              <Eye className="mr-2 h-4 w-4" />
-              View
-            </DropdownMenuItem>
-          )}
-          {invoice.fileUrl && (
-            <DropdownMenuItem onClick={handleDownload}>
-              <Download className="mr-2 h-4 w-4" />
-              Download
-            </DropdownMenuItem>
+          {onView && <DropdownMenuItem onSelect={handleView}>View</DropdownMenuItem>}
+          {invoice.fileUrl && <DropdownMenuItem onSelect={handleDownload}>Download</DropdownMenuItem>}
+          {Boolean(invoice.status === 'pending' && onVoid) && (
+            <>
+              <DropdownMenuSeparator />
+              <AlertDialog>
+                <AlertDialogTrigger asChild>
+                  <DropdownMenuItem onSelect={(e) => e.preventDefault()} variant="destructive">
+                    Void
+                  </DropdownMenuItem>
+                </AlertDialogTrigger>
+                <AlertDialogContent className="sm:max-w-md">
+                  <AlertDialogHeader>
+                    <AlertDialogTitle>Void Invoice</AlertDialogTitle>
+                    <AlertDialogDescription>
+                      Are you sure you want to void the invoice <span className="font-bold">{invoice.number}</span>?
+                      <br />
+                      This action cannot be undone.
+                    </AlertDialogDescription>
+                  </AlertDialogHeader>
+                  <AlertDialogFooter>
+                    <AlertDialogCancel>Cancel</AlertDialogCancel>
+                    <AlertDialogAction onClick={handleVoid} variant="destructive">
+                      Void
+                    </AlertDialogAction>
+                  </AlertDialogFooter>
+                </AlertDialogContent>
+              </AlertDialog>
+            </>
           )}
         </DropdownMenuContent>
       </DropdownMenu>

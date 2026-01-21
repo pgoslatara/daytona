@@ -3,18 +3,9 @@
  * SPDX-License-Identifier: AGPL-3.0
  */
 
-import { Filter, Search } from 'lucide-react'
+import { Search } from 'lucide-react'
 import React from 'react'
 import { DebouncedInput } from '../DebouncedInput'
-import { Button } from '../ui/button'
-import {
-  DropdownMenu,
-  DropdownMenuCheckboxItem,
-  DropdownMenuContent,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from '../ui/dropdown-menu'
 import { InvoicesTableHeaderProps } from './types'
 
 export function InvoicesTableHeader({ table }: InvoicesTableHeaderProps) {
@@ -52,33 +43,6 @@ export function InvoicesTableHeader({ table }: InvoicesTableHeaderProps) {
             data-search-input
           />
         </div>
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="outline" className="ml-auto h-8">
-              <Filter className="mr-2 h-4 w-4" />
-              View
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end" className="w-[150px]">
-            <DropdownMenuLabel>Toggle columns</DropdownMenuLabel>
-            <DropdownMenuSeparator />
-            {table
-              .getAllColumns()
-              .filter((column) => typeof column.accessorFn !== 'undefined' && column.getCanHide())
-              .map((column) => {
-                return (
-                  <DropdownMenuCheckboxItem
-                    key={column.id}
-                    className="capitalize"
-                    checked={column.getIsVisible()}
-                    onCheckedChange={(value) => column.toggleVisibility(!!value)}
-                  >
-                    {column.id}
-                  </DropdownMenuCheckboxItem>
-                )
-              })}
-          </DropdownMenuContent>
-        </DropdownMenu>
       </div>
     </div>
   )

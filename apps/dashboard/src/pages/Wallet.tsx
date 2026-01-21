@@ -22,6 +22,7 @@ import { useRedeemCouponMutation } from '@/hooks/mutations/useRedeemCouponMutati
 import { useResendOrganizationEmailVerificationMutation } from '@/hooks/mutations/useResendOrganizationEmailVerificationMutation'
 import { useSetAutomaticTopUpMutation } from '@/hooks/mutations/useSetAutomaticTopUpMutation'
 import { useTopUpWalletMutation } from '@/hooks/mutations/useTopUpWalletMutation'
+import { useVoidInvoiceMutation } from '@/hooks/mutations/useVoidInvoiceMutation'
 import {
   useOwnerBillingPortalUrlQuery,
   useOwnerInvoicesQuery,
@@ -37,6 +38,8 @@ import { NumericFormat } from 'react-number-format'
 import { useAuth } from 'react-oidc-context'
 import { toast } from 'sonner'
 
+const DEFAULT_PAGE_SIZE = 10
+
 const Wallet = () => {
   const { selectedOrganization } = useSelectedOrganization()
   const { billingApi } = useApi()
@@ -47,10 +50,14 @@ const Wallet = () => {
   const [redeemCouponSuccess, setRedeemCouponSuccess] = useState<string | null>(null)
   const [oneTimeTopUpAmount, setOneTimeTopUpAmount] = useState<number | undefined>(undefined)
   const [selectedPreset, setSelectedPreset] = useState<number | null>(null)
+  const [invoicesPagination, setInvoicesPagination] = useState({
+    pageIndex: 0,
+    pageSize: DEFAULT_PAGE_SIZE,
+  })
   const walletQuery = useOwnerWalletQuery()
   const billingPortalUrlQuery = useOwnerBillingPortalUrlQuery()
   const organizationEmailsQuery = useOwnerOrganizationEmailsQuery()
-  const invoicesQuery = useOwnerInvoicesQuery()
+  const invoicesQuery = useOwnerInvoicesQuery(invoicesPagination.pageIndex + 1, invoicesPagination.pageSize)
 
   const wallet = walletQuery.data
   const organizationEmails = organizationEmailsQuery.data
@@ -62,6 +69,7 @@ const Wallet = () => {
   const resendOrganizationEmailVerificationMutation = useResendOrganizationEmailVerificationMutation()
   const topUpWalletMutation = useTopUpWalletMutation()
   const createInvoicePaymentUrlMutation = useCreateInvoicePaymentUrlMutation()
+  const voidInvoiceMutation = useVoidInvoiceMutation()
 
   useEffect(() => {
     if (wallet?.automaticTopUp) {
@@ -239,13 +247,11 @@ const Wallet = () => {
         return
       }
 
-      // If invoice has a file URL, open it directly
       if (invoice.fileUrl) {
         window.open(invoice.fileUrl, '_blank')
         return
       }
 
-      // Otherwise, try to create a payment URL if payment is needed
       if (invoice.paymentStatus === 'pending' && invoice.totalDueAmountCents > 0) {
         try {
           const result = await createInvoicePaymentUrlMutation.mutateAsync({
@@ -261,6 +267,26 @@ const Wallet = () => {
       }
     },
     [selectedOrganization, createInvoicePaymentUrlMutation],
+  )
+
+  const handleVoidInvoice = useCallback(
+    async (invoice: Invoice) => {
+      if (!selectedOrganization) {
+        return
+      }
+      try {
+        await voidInvoiceMutation.mutateAsync({
+          organizationId: selectedOrganization.id,
+          invoiceId: invoice.id,
+        })
+        toast.success('Invoice voided successfully')
+      } catch (error) {
+        toast.error('Failed to void invoice', {
+          description: String(error),
+        })
+      }
+    },
+    [selectedOrganization, voidInvoiceMutation],
   )
 
   const isBillingLoading = walletQuery.isLoading || billingPortalUrlQuery.isLoading
@@ -616,8 +642,12 @@ const Wallet = () => {
               <CardContent>
                 <InvoicesTable
                   data={invoicesQuery.data?.items ?? []}
+                  pagination={invoicesPagination}
+                  pageCount={invoicesQuery.data?.totalPages ?? 0}
+                  onPaginationChange={setInvoicesPagination}
                   loading={invoicesQuery.isLoading}
                   onViewInvoice={handleViewInvoice}
+                  onVoidInvoice={handleVoidInvoice}
                 />
               </CardContent>
             </Card>
