@@ -479,8 +479,8 @@ export const getSidebarConfig = (
         {
           type: 'link',
           href: localizePath('/docs/runners', locale),
-          label: t('sidebarconfig.runners'),
-          description: t('sidebarconfig.runnersDescription'),
+          label: t('sidebarconfig.computeManagedInstances'),
+          description: t('sidebarconfig.computeManagedInstancesDescription'),
           disablePagination: true,
           attrs: {
             icon: 'computer.svg',

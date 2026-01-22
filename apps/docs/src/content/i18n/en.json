@@ -110,6 +110,8 @@
   "sidebarconfig.regionsDescription": "Region types and custom infrastructure.",
   "sidebarconfig.runners": "Runners",
   "sidebarconfig.runnersDescription": "Runner types and custom infrastructure.",
+  "sidebarconfig.computeManagedInstances": "Compute Managed Instances",
+  "sidebarconfig.computeManagedInstancesDescription": "Compute managed instances for Daytona Sandboxes.",
   "sidebarconfig.mcpServer": "MCP Server",
   "sidebarconfig.daytona": "Daytona",
   "sidebarconfig.sandbox": "Sandbox",
