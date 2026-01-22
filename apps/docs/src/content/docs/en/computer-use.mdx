@@ -21,3 +21,84 @@ Computer Use is currently in **private alpha**. To request access, please fill o
 ## Getting started
 
 Once you have access to the Computer Use alpha, you'll be able to programmatically control desktop environments within your Daytona sandboxes. The functionality will include mouse operations, keyboard automation, screenshot capture, and display management specifically optimized for the operating system of your choice.
+
+## SDK References
+
+Choose your preferred SDK to get started with computer use automation:
+
+### TypeScript SDK
+Complete API reference for computer use operations in TypeScript.
+
+[View TypeScript SDK →](/docs/en/typescript-sdk/computer-use)
+
+### Python SDK  
+Complete API reference for computer use operations in Python (sync & async).
+
+[View Python SDK →](/docs/en/python-sdk/sync/computer-use)
+
+## Quick Example
+
+<Tabs syncKey="language">
+  <TabItem label="Python" icon="seti:python">
+    ```python
+    from daytona import Daytona, DaytonaConfig
+
+    # Initialize using environment variables (recommended)
+    daytona = DaytonaConfig()
+    # Or explicitly configure:
+    # daytona = Daytona(
+    #     api_key=os.getenv('DAYTONA_API_KEY'),
+    #     api_url=os.getenv('DAYTONA_API_URL', 'https://app.daytona.io/api')
+    # )
+
+    # Create sandbox from default snapshot (includes desktop environment)
+    sandbox = daytona.create()
+
+    # Start computer use processes
+    result = sandbox.computer_use.start()
+    print("Computer use started:", result.message)
+
+    # Take a screenshot
+    screenshot = sandbox.computer_use.screenshot.take_full_screen()
+
+    # Click and type
+    sandbox.computer_use.mouse.click(100, 200)
+    sandbox.computer_use.keyboard.type('Hello, Linux!')
+    sandbox.computer_use.keyboard.hotkey('ctrl+s')
+    ```
+  </TabItem>
+
+  <TabItem label="TypeScript" icon="seti:typescript">
+    ```typescript
+    import { Daytona } from '@daytonaio/sdk';
+
+    // Initialize using environment variables (recommended)
+    const daytona = new Daytona();
+    // Or explicitly configure:
+    // const daytona = new Daytona({
+    //     apiKey: process.env.DAYTONA_API_KEY,
+    //     apiUrl: process.env.DAYTONA_API_URL || 'https://app.daytona.io/api'
+    // });
+
+    // Create sandbox from default snapshot (includes desktop environment)
+    const sandbox = await daytona.create();
+
+    // Start computer use processes
+    await sandbox.computerUse.start();
+
+    // Take a screenshot
+    const screenshot = await sandbox.computerUse.screenshot.takeFullScreen();
+
+    // Click and type
+    await sandbox.computerUse.mouse.click(100, 200);
+    await sandbox.computerUse.keyboard.type('Hello, Linux!');
+    await sandbox.computerUse.keyboard.hotkey('ctrl+s');
+    ```
+  </TabItem>
+</Tabs>
+
+**Environment Variables (.env file):**
+```bash
+DAYTONA_API_KEY=your-api-key-here
+DAYTONA_API_URL=https://app.daytona.io/api
+```
