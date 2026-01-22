@@ -405,7 +405,7 @@ export const getSidebarConfig = (
         },
         {
           type: 'link',
-          href: localizePath('/docs/google-adk-code-generator', locale),
+          href: localizePath('/docs/guides/google-adk-code-generator', locale),
           label: t('sidebarconfig.googleAdk'),
           disablePagination: true,
           attrs: {
@@ -414,7 +414,10 @@ export const getSidebarConfig = (
         },
         {
           type: 'link',
-          href: localizePath('/docs/letta-code-agent', locale),
+          href: localizePath(
+            '/docs/guides/letta-code/letta-code-agent',
+            locale
+          ),
           label: t('sidebarconfig.lettacode'),
           disablePagination: true,
           attrs: {
