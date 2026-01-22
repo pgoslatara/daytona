@@ -75,6 +75,7 @@ export const handlers = [
       name: 'Wallet',
       creditCardConnected: false,
       automaticTopUp: undefined,
+      hasFailedOrPendingInvoice: true,
     })
   }),
   http.get(`${BILLING_API_URL}/organization/:organizationId/tier`, async () => {

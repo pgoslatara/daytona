@@ -23,5 +23,6 @@ export const useOrganizationWalletQuery = ({
     queryKey: queryKeys.organization.wallet(organizationId),
     queryFn: () => billingApi.getOrganizationWallet(organizationId),
     enabled: Boolean(enabled && config.billingApiUrl && organizationId),
+    refetchOnWindowFocus: true,
   })
 }

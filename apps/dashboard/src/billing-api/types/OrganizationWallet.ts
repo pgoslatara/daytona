@@ -10,6 +10,7 @@ export interface OrganizationWallet {
   creditCardConnected: boolean
 
   automaticTopUp?: AutomaticTopUp
+  hasFailedOrPendingInvoice?: boolean
 }
 
 export type AutomaticTopUp = {

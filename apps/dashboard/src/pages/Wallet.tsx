@@ -361,6 +361,16 @@ const Wallet = () => {
                 )}
               </>
             )}
+            {wallet.hasFailedOrPendingInvoice && (
+              <Alert variant="destructive">
+                <TriangleAlertIcon />
+                <AlertTitle>Outstanding invoices</AlertTitle>
+                <AlertDescription>
+                  You have failed or pending invoices that need to be resolved before adding new funds. Please review
+                  your invoices below and complete or void any outstanding payments.
+                </AlertDescription>
+              </Alert>
+            )}
 
             <Card className="h-full">
               <CardHeader>
