@@ -8,13 +8,13 @@ Daytona provides comprehensive file system operations through the `fs` module in
 
 ## Basic operations
 
-Daytona provides an option to interact with the file system in sandboxes. You can perform various operations like listing files, creating directories, reading and writing files, and more.
+Daytona provides methods to interact with the file system in sandboxes. You can perform various operations like listing files, creating directories, reading and writing files, and more.
 
 File operations assume you are operating in the sandbox user's home directory (e.g. `workspace` implies `/home/[username]/workspace`). Use a leading `/` when providing absolute paths.
 
 ### List files and directories
 
-Daytona provides an option to list files and directories in a sandbox using Python and TypeScript.
+Daytona provides methods to list files and directories in a sandbox using Python and TypeScript.
 
 <Tabs syncKey="language">
 <TabItem label="Python" icon="seti:python">
@@ -54,7 +54,7 @@ For more information, see the [Python SDK](/docs/en/python-sdk/) and [TypeScript
 
 ### Get file information
 
-Daytona provides an option to get file information using Python and TypeScript.
+Daytona provides methods to get file information using Python and TypeScript.
 
 <Tabs syncKey="language">
 <TabItem label="Python" icon="seti:python">
@@ -88,7 +88,7 @@ For more information, see the [Python SDK](/docs/en/python-sdk/) and [TypeScript
 
 ### Create directories
 
-Daytona provides an option to create directories with specific permissions using Python and TypeScript.
+Daytona provides methods to create directories with specific permissions using Python and TypeScript.
 
 <Tabs syncKey="language">
 <TabItem label="Python" icon="seti:python">
@@ -114,7 +114,7 @@ For more information, see the [Python SDK](/docs/en/python-sdk/) and [TypeScript
 
 ### Upload files
 
-Daytona provides options to read, write, upload, download, and delete files in sandboxes using Python and TypeScript.
+Daytona provides methods to read, write, upload, download, and delete files in sandboxes using Python and TypeScript.
 
 #### Upload a single file
 
@@ -321,7 +321,7 @@ Daytona provides advanced file system operations like file permissions, search a
 
 ### File permissions
 
-Daytona provides an option to set file permissions, get file permissions, and set directory permissions recursively using Python and TypeScript.
+Daytona provides methods to set file permissions, get file permissions, and set directory permissions recursively using Python and TypeScript.
 
 <Tabs syncKey="language">
 <TabItem label="Python" icon="seti:python">
@@ -355,7 +355,7 @@ For more information, see the [Python SDK](/docs/en/python-sdk/) and [TypeScript
 
 ### File search and replace
 
-Daytona provides an option to search for text in files and replace text in files using Python and TypeScript.
+Daytona provides methods to search for text in files and replace text in files using Python and TypeScript.
 
 <Tabs syncKey="language">
 <TabItem label="Python" icon="seti:python">
@@ -413,3 +413,43 @@ For more information, see the [Python SDK](/docs/en/python-sdk/) and [TypeScript
 > [**findFiles (TypeScript SDK)**](/docs/en/typescript-sdk/file-system/#findfiles)
 > 
 > [**replaceInFiles (TypeScript SDK)**](/docs/en/typescript-sdk/file-system/#replaceinfiles)
+
+## Move or replace files
+
+Daytona provides methods to move or replace files using Python and TypeScript.
+
+<Tabs syncKey="language">
+<TabItem label="Python" icon="seti:python">
+```python
+# Rename a file
+sandbox.fs.move_files(
+    "workspace/data/old_name.txt",
+    "workspace/data/new_name.txt"
+)
+
+# Move a file to a different directory
+sandbox.fs.move_files(
+    "workspace/data/file.txt",
+    "workspace/archive/file.txt"
+)
+
+# Move a directory
+sandbox.fs.move_files(
+    "workspace/old_dir",
+    "workspace/new_dir"
+)
+```
+</TabItem>
+<TabItem label="TypeScript" icon="seti:typescript">
+```typescript
+// Move a file to a new location
+await fs.moveFiles('app/temp/data.json', 'app/data/data.json');
+```
+</TabItem>
+</Tabs>
+
+For more information, see the [Python SDK](/docs/en/python-sdk/) and [TypeScript SDK](/docs/en/typescript-sdk/) references:
+
+> [**move_file (Python SDK)**](/docs/en/python-sdk/sync/file-system/#filesystemmove_files)
+> 
+> [**moveFile (TypeScript SDK)**](/docs/en/typescript-sdk/file-system/#movefiles)
