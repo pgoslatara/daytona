@@ -44,6 +44,11 @@ files.forEach(file => {
 ```
 
 </TabItem>
+<TabItem label="API" icon="seti:json">
+```bash
+curl 'https://proxy.app.daytona.io/toolbox/{sandboxId}/files'
+```
+</TabItem>
 </Tabs>
 
 For more information, see the [Python SDK](/docs/en/python-sdk/), [TypeScript SDK](/docs/en/typescript-sdk/) and [API](/docs/en/tools/api/#daytona-toolbox) references:
@@ -80,6 +85,11 @@ const info = await fs.getFileDetails('app/config.json');
 console.log(`Size: ${info.size}, Modified: ${info.modTime}`);
 ```
 </TabItem>
+<TabItem label="API" icon="seti:json">
+```bash
+curl 'https://proxy.app.daytona.io/toolbox/{sandboxId}/files/info?path='
+```
+</TabItem>
 </Tabs>
 
 For more information, see the [Python SDK](/docs/en/python-sdk/), [TypeScript SDK](/docs/en/typescript-sdk/) and [API](/docs/en/tools/api/) references:
@@ -107,6 +117,12 @@ sandbox.fs.create_folder("workspace/new-dir", "755")
 await sandbox.fs.createFolder("workspace/new-dir", "755")
 ```
 
+</TabItem>
+<TabItem label="API" icon="seti:json">
+```bash
+curl 'https://proxy.app.daytona.io/toolbox/{sandboxId}/files/folder?path=&mode=' \
+  --request POST
+```
 </TabItem>
 </Tabs>
 
@@ -142,6 +158,14 @@ const fileContent = Buffer.from('Hello, World!')
 await sandbox.fs.uploadFile(fileContent, "data.txt")
 ```
 
+</TabItem>
+<TabItem label="API" icon="seti:json">
+```bash
+curl 'https://proxy.app.daytona.io/toolbox/{sandboxId}/files/upload?path=' \
+  --request POST \
+  --header 'Content-Type: multipart/form-data' \
+  --form 'file='
+```
 </TabItem>
 </Tabs>
 
@@ -206,6 +230,12 @@ await sandbox.fs.uploadFiles(files)
 ```
 
 </TabItem>
+<TabItem label="API" icon="seti:json">
+```bash
+curl 'https://proxy.app.daytona.io/toolbox/{sandboxId}/files/bulk-upload' \
+  --request POST
+```
+</TabItem>
 </Tabs>
 
 For more information, see the [Python SDK](/docs/en/python-sdk/), [TypeScript SDK](/docs/en/typescript-sdk/) and [API](/docs/en/tools/api/#daytona-toolbox) references:
@@ -242,6 +272,11 @@ print(content.decode('utf-8'))
 const downloadedFile = await sandbox.fs.downloadFile("file1.txt")
 
 console.log('File content:', downloadedFile.toString())
+```
+</TabItem>
+<TabItem label="API" icon="seti:json">
+```bash
+curl 'https://proxy.app.daytona.io/toolbox/{sandboxId}/files/download?path='
 ```
 </TabItem>
 </Tabs>
@@ -295,6 +330,18 @@ results.forEach(result => {
 })
 ```
 </TabItem>
+<TabItem label="API" icon="seti:json">
+```bash
+curl 'https://proxy.app.daytona.io/toolbox/{sandboxId}/files/bulk-download' \
+  --request POST \
+  --header 'Content-Type: application/json' \
+  --data '{
+  "paths": [
+    ""
+  ]
+}'
+```
+</TabItem>
 </Tabs>
 
 For more information, see the [Python SDK](/docs/en/python-sdk/), [TypeScript SDK](/docs/en/typescript-sdk/) and [API](/docs/en/tools/api/#daytona-toolbox) references:
@@ -318,6 +365,12 @@ sandbox.fs.delete_file("workspace/file.txt")
 <TabItem label="TypeScript" icon="seti:typescript">
 ```typescript
 await sandbox.fs.deleteFile("workspace/file.txt")
+```
+</TabItem>
+<TabItem label="API" icon="seti:json">
+```bash
+curl 'https://proxy.app.daytona.io/toolbox/{sandboxId}/files?path=' \
+  --request DELETE
 ```
 </TabItem>
 </Tabs>
@@ -359,6 +412,12 @@ const fileInfo = await sandbox.fs.getFileDetails("workspace/file.txt")
 console.log(`Permissions: ${fileInfo.permissions}`)
 ```
 
+</TabItem>
+<TabItem label="API" icon="seti:json">
+```bash
+curl 'https://proxy.app.daytona.io/toolbox/{sandboxId}/files/permissions?path=' \
+  --request POST
+```
 </TabItem>
 </Tabs>
 
@@ -420,6 +479,20 @@ await sandbox.fs.replaceInFiles(
 ```
 
 </TabItem>
+<TabItem label="API" icon="seti:json">
+```bash
+curl 'https://proxy.app.daytona.io/toolbox/{sandboxId}/files/replace' \
+  --request POST \
+  --header 'Content-Type: application/json' \
+  --data '{
+  "files": [
+    ""
+  ],
+  "newValue": "",
+  "pattern": ""
+}'
+```
+</TabItem>
 </Tabs>
 
 For more information, see the [Python SDK](/docs/en/python-sdk/), [TypeScript SDK](/docs/en/typescript-sdk/) and [API](/docs/en/tools/api/#daytona-toolbox) references:
@@ -466,6 +539,12 @@ sandbox.fs.move_files(
 ```typescript
 // Move a file to a new location
 await fs.moveFiles('app/temp/data.json', 'app/data/data.json');
+```
+</TabItem>
+<TabItem label="API" icon="seti:json">
+```bash
+curl 'https://proxy.app.daytona.io/toolbox/{sandboxId}/files/move?source=&destination=' \
+  --request POST
 ```
 </TabItem>
 </Tabs>
