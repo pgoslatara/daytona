@@ -14,7 +14,7 @@ File operations assume you are operating in the sandbox user's home directory (e
 
 ### List files and directories
 
-Daytona provides methods to list files and directories in a sandbox using Python and TypeScript.
+Daytona provides methods to list files and directories in a sandbox using Python and TypeScript. The following snippet shows how to list files in a directory by providing the path to the directory.
 
 <Tabs syncKey="language">
 <TabItem label="Python" icon="seti:python">
@@ -48,13 +48,13 @@ files.forEach(file => {
 
 For more information, see the [Python SDK](/docs/en/python-sdk/) and [TypeScript SDK](/docs/en/typescript-sdk/) references:
 
-> [list_files (Python SDK)](/docs/python-sdk/sync/file-system/#filesystemlist_files)
+> [**list_files (Python SDK)**](/docs/en/python-sdk/sync/file-system/#filesystemlist_files)
 > 
-> [listFiles (TypeScript SDK)](/docs/typescript-sdk/file-system/#listfiles)
+> [**listFiles (TypeScript SDK)**](/docs/en/typescript-sdk/file-system/#listfiles)
 
 ### Get file information
 
-Daytona provides methods to get file information using Python and TypeScript.
+Daytona provides methods to get file information using Python and TypeScript. The following snippet shows how to get file information by providing the path to the file.
 
 <Tabs syncKey="language">
 <TabItem label="Python" icon="seti:python">
@@ -82,13 +82,13 @@ console.log(`Size: ${info.size}, Modified: ${info.modTime}`);
 
 For more information, see the [Python SDK](/docs/en/python-sdk/) and [TypeScript SDK](/docs/en/typescript-sdk/) references:
 
-> [get_file_info (Python SDK)](/docs/en/python-sdk/sync/file-system/#filesystemget_file_info)
+> [**get_file_info (Python SDK)**](/docs/en/python-sdk/sync/file-system/#filesystemget_file_info)
 > 
-> [getFileDetails (TypeScript SDK)](/docs/en/typescript-sdk/file-system/#getfiledetails)
+> [**getFileDetails (TypeScript SDK)**](/docs/en/typescript-sdk/file-system/#getfiledetails)
 
 ### Create directories
 
-Daytona provides methods to create directories with specific permissions using Python and TypeScript.
+Daytona provides methods to create directories with specific permissions using Python and TypeScript. The following snippet shows how to create a directory by providing the path to the directory and the permissions to set.
 
 <Tabs syncKey="language">
 <TabItem label="Python" icon="seti:python">
@@ -114,11 +114,11 @@ For more information, see the [Python SDK](/docs/en/python-sdk/) and [TypeScript
 
 ### Upload files
 
-Daytona provides methods to read, write, upload, download, and delete files in sandboxes using Python and TypeScript.
+Daytona provides methods to upload files in sandboxes using Python and TypeScript.
 
 #### Upload a single file
 
-The following example shows how to upload a single file:
+Daytona provides methods to upload a single file in sandboxes using Python and TypeScript. The following snippet shows how to upload a single file by providing the content to upload and the path to the file to upload it to.
 
 <Tabs syncKey="language">
 <TabItem label="Python" icon="seti:python">
@@ -147,7 +147,7 @@ For more information, see the [Python SDK](/docs/en/python-sdk/) and [TypeScript
 
 #### Upload multiple files
 
-The following example shows how to efficiently upload multiple files with a single method call.
+Daytona provides methods to upload multiple files in sandboxes using Python and TypeScript. The following snippet shows how to efficiently upload multiple files with a single method call by providing the paths to the files and the content to upload.
 
 <Tabs syncKey="language">
 <TabItem label="Python" icon="seti:python">
@@ -174,7 +174,6 @@ with open("settings.json", "rb") as f3:
     ))
 
 sandbox.fs.upload_files(files_to_upload)
-
 ```
 </TabItem>
 <TabItem label="TypeScript" icon="seti:typescript">
@@ -209,9 +208,11 @@ For more information, see the [Python SDK](/docs/en/python-sdk/) and [TypeScript
 
 ### Download files
 
+Daytona provides methods to download files from sandboxes using Python and TypeScript.
+
 #### Download a single file
 
-The following commands downloads a single file `file1.txt` from the Sandbox working directory and prints out the content:
+Daytona provides methods to download a single file from sandboxes using Python and TypeScript. The following snippet downloads a single file `file1.txt` from the sandbox working directory and prints out the content:
 
 <Tabs syncKey="language">
 <TabItem label="Python" icon="seti:python">
@@ -223,7 +224,6 @@ with open("local_file.txt", "wb") as f:
     f.write(content)
 
 print(content.decode('utf-8'))
-
 ```
 </TabItem>
 <TabItem label="TypeScript" icon="seti:typescript">
@@ -232,7 +232,6 @@ print(content.decode('utf-8'))
 const downloadedFile = await sandbox.fs.downloadFile("file1.txt")
 
 console.log('File content:', downloadedFile.toString())
-
 ```
 </TabItem>
 </Tabs>
@@ -245,7 +244,7 @@ For more information, see the [Python SDK](/docs/en/python-sdk/) and [TypeScript
 
 #### Download multiple files
 
-The following example shows how to efficiently download multiple files with a single method call.
+Daytona provides methods to download multiple files from sandboxes using Python and TypeScript. The following snippet shows how to efficiently download multiple files with a single method call.
 
 <Tabs syncKey="language">
 <TabItem label="Python" icon="seti:python">
@@ -294,7 +293,7 @@ For more information, see the [Python SDK](/docs/en/python-sdk/) and [TypeScript
 
 ### Delete files
 
-The following example shows how to delete a file:
+Daytona provides methods to delete files from sandboxes using Python and TypeScript. The following snippet shows how to delete a file by providing the path to the file.
 
 <Tabs syncKey="language">
 <TabItem label="Python" icon="seti:python">
@@ -317,11 +316,11 @@ For more information, see the [Python SDK](/docs/en/python-sdk/) and [TypeScript
 
 ## Advanced operations
 
-Daytona provides advanced file system operations like file permissions, search and replace, and more.
+Daytona provides advanced file system operations like [file permissions](#file-permissions), [search and replace](#file-search-and-replace), and more.
 
 ### File permissions
 
-Daytona provides methods to set file permissions, get file permissions, and set directory permissions recursively using Python and TypeScript.
+Daytona provides methods to set file permissions, get file permissions, and set directory permissions recursively using Python and TypeScript. The following snippet shows how to set file permissions by providing the path to the file and the permissions to set.
 
 <Tabs syncKey="language">
 <TabItem label="Python" icon="seti:python">
@@ -355,7 +354,7 @@ For more information, see the [Python SDK](/docs/en/python-sdk/) and [TypeScript
 
 ### File search and replace
 
-Daytona provides methods to search for text in files and replace text in files using Python and TypeScript.
+Daytona provides methods to search for text in files and replace text in files using Python and TypeScript. The following snippet shows how to search for text in files and replace text in files by providing the path to the files and the text to search for and the text to replace it with.
 
 <Tabs syncKey="language">
 <TabItem label="Python" icon="seti:python">
@@ -416,7 +415,7 @@ For more information, see the [Python SDK](/docs/en/python-sdk/) and [TypeScript
 
 ### Move or replace files
 
-Daytona provides methods to move or replace files using Python and TypeScript.
+Daytona provides methods to move or replace files using Python and TypeScript. The following snippet shows how to move a file to a new location by providing the path to the file and the new path.
 
 <Tabs syncKey="language">
 <TabItem label="Python" icon="seti:python">
