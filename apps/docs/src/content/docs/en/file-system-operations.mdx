@@ -4,17 +4,17 @@ title: File System Operations
 
 import { TabItem, Tabs } from '@astrojs/starlight/components'
 
-The Daytona SDK provides comprehensive file system operations through the `fs` module in Sandboxes. This guide covers all available file system operations and best practices.
+Daytona provides comprehensive file system operations through the `fs` module in sandboxes.
 
-## Basic Operations
+## Basic operations
 
-Daytona SDK provides an option to interact with the file system in Sandboxes. You can perform various operations like listing files, creating directories, reading and writing files, and more.
+Daytona provides an option to interact with the file system in sandboxes. You can perform various operations like listing files, creating directories, reading and writing files, and more.
 
-File operations assume you are operating in the Sandbox user's home directory (e.g. `workspace` implies `/home/[username]/workspace`). Use a leading `/` when providing absolute paths.
+File operations assume you are operating in the sandbox user's home directory (e.g. `workspace` implies `/home/[username]/workspace`). Use a leading `/` when providing absolute paths.
 
-### Listing Files and Directories
+### List files and directories
 
-Daytona SDK provides an option to list files and directories in a Sandbox using Python and TypeScript.
+Daytona provides an option to list files and directories in a sandbox using Python and TypeScript.
 
 <Tabs syncKey="language">
 <TabItem label="Python" icon="seti:python">
@@ -46,11 +46,49 @@ files.forEach(file => {
 </TabItem>
 </Tabs>
 
-See: [list_files (Python SDK)](/docs/python-sdk/sync/file-system/#filesystemlist_files), [listFiles (TypeScript SDK)](/docs/typescript-sdk/file-system/#listfiles)
+For more information, see the [Python SDK](/docs/en/python-sdk/) and [TypeScript SDK](/docs/en/typescript-sdk/) references:
 
-### Creating Directories
+> [list_files (Python SDK)](/docs/python-sdk/sync/file-system/#filesystemlist_files)
+> 
+> [listFiles (TypeScript SDK)](/docs/typescript-sdk/file-system/#listfiles)
 
-Daytona SDK provides an option to create directories with specific permissions using Python and TypeScript.
+### Get file information
+
+Daytona provides an option to get file information using Python and TypeScript.
+
+<Tabs syncKey="language">
+<TabItem label="Python" icon="seti:python">
+```python
+# Get file metadata
+info = sandbox.fs.get_file_info("workspace/data/file.txt")
+print(f"Size: {info.size} bytes")
+print(f"Modified: {info.mod_time}")
+print(f"Mode: {info.mode}")
+
+# Check if path is a directory
+info = sandbox.fs.get_file_info("workspace/data")
+if info.is_dir:
+    print("Path is a directory")
+```
+</TabItem>
+<TabItem label="TypeScript" icon="seti:typescript">
+```typescript
+// Get file details
+const info = await fs.getFileDetails('app/config.json');
+console.log(`Size: ${info.size}, Modified: ${info.modTime}`);
+```
+</TabItem>
+</Tabs>
+
+For more information, see the [Python SDK](/docs/en/python-sdk/) and [TypeScript SDK](/docs/en/typescript-sdk/) references:
+
+> [get_file_info (Python SDK)](/docs/en/python-sdk/sync/file-system/#filesystemget_file_info)
+> 
+> [getFileDetails (TypeScript SDK)](/docs/en/typescript-sdk/file-system/#getfiledetails)
+
+### Create directories
+
+Daytona provides an option to create directories with specific permissions using Python and TypeScript.
 
 <Tabs syncKey="language">
 <TabItem label="Python" icon="seti:python">
@@ -68,13 +106,17 @@ await sandbox.fs.createFolder("workspace/new-dir", "755")
 </TabItem>
 </Tabs>
 
-See: [create_folder (Python SDK)](/docs/python-sdk/sync/file-system/#filesystemcreate_folder), [createFolder (TypeScript SDK)](/docs/typescript-sdk/file-system/#createfolder)
+For more information, see the [Python SDK](/docs/en/python-sdk/) and [TypeScript SDK](/docs/en/typescript-sdk/) references:
 
-### Uploading Files
+> [**create_folder (Python SDK)**](/docs/en/python-sdk/sync/file-system/#filesystemcreate_folder)
+> 
+> [**createFolder (TypeScript SDK)**](/docs/en/typescript-sdk/file-system/#createfolder)
 
-Daytona SDK provides options to read, write, upload, download, and delete files in Sandboxes using Python and TypeScript.
+### Upload files
 
-#### Uploading a Single File
+Daytona provides options to read, write, upload, download, and delete files in sandboxes using Python and TypeScript.
+
+#### Upload a single file
 
 The following example shows how to upload a single file:
 
@@ -97,9 +139,13 @@ await sandbox.fs.uploadFile(fileContent, "data.txt")
 </TabItem>
 </Tabs>
 
-See: [upload_file (Python SDK)](/docs/python-sdk/sync/file-system/#filesystemupload_file), [uploadFile (TypeScript SDK)](/docs/typescript-sdk/file-system/#uploadfile)
+For more information, see the [Python SDK](/docs/en/python-sdk/) and [TypeScript SDK](/docs/en/typescript-sdk/) references:
 
-#### Uploading Multiple Files
+> [**upload_file (Python SDK)**](/docs/en/python-sdk/sync/file-system/#filesystemupload_file)
+> 
+> [**uploadFile (TypeScript SDK)**](/docs/en/typescript-sdk/file-system/#uploadfile)
+
+#### Upload multiple files
 
 The following example shows how to efficiently upload multiple files with a single method call.
 
@@ -155,11 +201,15 @@ await sandbox.fs.uploadFiles(files)
 </TabItem>
 </Tabs>
 
-See: [upload_files (Python SDK)](/docs/python-sdk/sync/file-system/#filesystemupload_files), [uploadFiles (TypeScript SDK)](/docs/typescript-sdk/file-system/#uploadfiles)
+For more information, see the [Python SDK](/docs/en/python-sdk/) and [TypeScript SDK](/docs/en/typescript-sdk/) references:
+
+> [**upload_files (Python SDK)**](/docs/en/python-sdk/sync/file-system/#filesystemupload_files)
+> 
+> [**uploadFiles (TypeScript SDK)**](/docs/en/typescript-sdk/file-system/#uploadfiles)
 
 ### Downloading Files
 
-#### Downloading a Single File
+#### Download a single file
 
 The following commands downloads a single file `file1.txt` from the Sandbox working directory and prints out the content:
 
@@ -188,9 +238,13 @@ console.log('File content:', downloadedFile.toString())
 </TabItem>
 </Tabs>
 
-See: [download_file (Python SDK)](/docs/python-sdk/sync/file-system/#filesystemdownload_file), [downloadFile (TypeScript SDK)](/docs/typescript-sdk/file-system/#downloadfile)
+For more information, see the [Python SDK](/docs/en/python-sdk/) and [TypeScript SDK](/docs/en/typescript-sdk/) references:
 
-#### Downloading Multiple Files
+> [**download_file (Python SDK)**](/docs/en/python-sdk/sync/file-system/#filesystemdownload_file)
+> 
+> [**downloadFile (TypeScript SDK)**](/docs/en/typescript-sdk/file-system/#downloadfile)
+
+#### Download multiple files
 
 The following example shows how to efficiently download multiple files with a single method call.
 
@@ -234,7 +288,11 @@ results.forEach(result => {
 </TabItem>
 </Tabs>
 
-See: [download_files (Python SDK)](/docs/python-sdk/sync/file-system/#filesystemdownload_files), [downloadFiles (TypeScript SDK)](/docs/typescript-sdk/file-system/#downloadfiles)
+For more information, see the [Python SDK](/docs/en/python-sdk/) and [TypeScript SDK](/docs/en/typescript-sdk/) references:
+
+> [**download_files (Python SDK)**](/docs/en/python-sdk/sync/file-system/#filesystemdownload_files)
+> 
+> [**downloadFiles (TypeScript SDK)**](/docs/en/typescript-sdk/file-system/#downloadfiles)
 
 ### Deleting files
 
@@ -257,15 +315,19 @@ await sandbox.fs.deleteFile("workspace/file.txt")
 </TabItem>
 </Tabs>
 
-See: [delete_file (Python SDK)](/docs/python-sdk/sync/file-system/#filesystemdelete_file), [deleteFile (TypeScript SDK)](/docs/typescript-sdk/file-system/#deletefile)
+For more information, see the [Python SDK](/docs/en/python-sdk/) and [TypeScript SDK](/docs/en/typescript-sdk/) references:
 
-## Advanced Operations
+> [**delete_file (Python SDK)**](/docs/en/python-sdk/sync/file-system/#filesystemdelete_file)
+> 
+> [**deleteFile (TypeScript SDK)**](/docs/en/typescript-sdk/file-system/#deletefile)
 
-Daytona SDK provides advanced file system operations like file permissions, search and replace, and more.
+## Advanced operations
 
-### File Permissions
+Daytona provides advanced file system operations like file permissions, search and replace, and more.
 
-Daytona SDK provides an option to set file permissions, get file permissions, and set directory permissions recursively using Python and TypeScript.
+### File permissions
+
+Daytona provides an option to set file permissions, get file permissions, and set directory permissions recursively using Python and TypeScript.
 
 <Tabs syncKey="language">
 <TabItem label="Python" icon="seti:python">
@@ -274,10 +336,8 @@ Daytona SDK provides an option to set file permissions, get file permissions, an
 sandbox.fs.set_file_permissions("workspace/file.txt", "644")
 
 # Get file permissions
-
 file_info = sandbox.fs.get_file_info("workspace/file.txt")
 print(f"Permissions: {file_info.permissions}")
-
 ```
 </TabItem>
 <TabItem label="TypeScript" icon="seti:typescript">
@@ -293,11 +353,15 @@ console.log(`Permissions: ${fileInfo.permissions}`)
 </TabItem>
 </Tabs>
 
-See: [set_file_permissions (Python SDK)](/docs/python-sdk/sync/file-system/#filesystemset_file_permissions), [setFilePermissions (TypeScript SDK)](/docs/typescript-sdk/file-system/#setfilepermissions)
+For more information, see the [Python SDK](/docs/en/python-sdk/) and [TypeScript SDK](/docs/en/typescript-sdk/) references:
 
-### File Search and Replace
+> [**set_file_permissions (Python SDK)**](/docs/en/python-sdk/sync/file-system/#filesystemset_file_permissions)
+> 
+> [**setFilePermissions (TypeScript SDK)**](/docs/en/typescript-sdk/file-system/#setfilepermissions)
 
-Daytona SDK provides an option to search for text in files and replace text in files using Python and TypeScript.
+### File search and replace
+
+Daytona provides an option to search for text in files and replace text in files using Python and TypeScript.
 
 <Tabs syncKey="language">
 <TabItem label="Python" icon="seti:python">
@@ -347,4 +411,12 @@ await sandbox.fs.replaceInFiles(
 </TabItem>
 </Tabs>
 
-See: [find_files (Python SDK)](/docs/python-sdk/sync/file-system/#filesystemfind_files), [replace_in_files (Python SDK)](/docs/python-sdk/sync/file-system/#filesystemreplace_in_files), [findFiles (TypeScript SDK)](/docs/typescript-sdk/file-system/#findfiles), [replaceInFiles (TypeScript SDK)](/docs/typescript-sdk/file-system/#replaceinfiles)
+For more information, see the [Python SDK](/docs/en/python-sdk/) and [TypeScript SDK](/docs/en/typescript-sdk/) references:
+
+> [**find_files (Python SDK)**](/docs/en/python-sdk/sync/file-system/#filesystemfind_files)
+> 
+> [**replace_in_files (Python SDK)**](/docs/en/python-sdk/sync/file-system/#filesystemreplace_in_files)
+> 
+> [**findFiles (TypeScript SDK)**](/docs/en/typescript-sdk/file-system/#findfiles)
+> 
+> [**replaceInFiles (TypeScript SDK)**](/docs/en/typescript-sdk/file-system/#replaceinfiles)
