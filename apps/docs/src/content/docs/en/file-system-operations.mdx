@@ -234,7 +234,6 @@ const downloadedFile = await sandbox.fs.downloadFile("file1.txt")
 console.log('File content:', downloadedFile.toString())
 
 ```
-
 </TabItem>
 </Tabs>
 
@@ -264,7 +263,6 @@ for result in results:
         print(f"Error downloading {result.source}: {result.error}")
     elif result.result:
         print(f"Downloaded {result.source} to {result.result}")
-
 ```
 </TabItem>
 <TabItem label="TypeScript" icon="seti:typescript">
@@ -301,17 +299,13 @@ The following example shows how to delete a file:
 <Tabs syncKey="language">
 <TabItem label="Python" icon="seti:python">
 ```python
-
 sandbox.fs.delete_file("workspace/file.txt")
-
 ```
 </TabItem>
 <TabItem label="TypeScript" icon="seti:typescript">
 ```typescript
-
 await sandbox.fs.deleteFile("workspace/file.txt")
 ```
-
 </TabItem>
 </Tabs>
 
@@ -378,7 +372,6 @@ for match in results:
     print("\n")
 
 # Replace text in files
-
 sandbox.fs.replace_in_files(
     files=["workspace/file1.txt", "workspace/file2.txt"],
     pattern="old_text",
