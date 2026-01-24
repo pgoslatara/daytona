@@ -189,7 +189,7 @@ async function main() {
 
   // Create a sandbox with custom resources
   const sandbox = await daytona.create({
-    image: Image.debianSlim("3.13"),
+    image: Image.debianSlim("3.12"),
     resources: {
       cpu: 2,     // 2 CPU cores
       memory: 4,  // 4GB RAM
@@ -210,7 +210,7 @@ For more information, see the [Python SDK](/docs/en/python-sdk/sync/daytona) and
 
 > [**Resources (Python SDK)**](/docs/en/python-sdk/sync/sandbox#resources)
 >
-> [**Resources (TypeScript SDK)**](/docs/en/typescript-sdk/snapshot#createsnapshotparams)
+> [**Resources (TypeScript SDK)**](/docs/en/typescript-sdk/daytona#resources)
 
 ### Ephemeral Sandboxes
 
@@ -225,7 +225,7 @@ from daytona import Daytona, CreateSandboxFromSnapshotParams
 
 daytona = Daytona()
 
-# Create an ephemeral Sandbox
+# Create an ephemeral sandbox
 params = CreateSandboxFromSnapshotParams(
   ephemeral=True,
   auto_stop_interval=5 # The ephemeral sandbox will be deleted after 5 minutes of inactivity
@@ -302,11 +302,11 @@ curl 'https://app.daytona.io/api/sandbox/{sandboxIdOrName}/start' \
 </TabItem>
 </Tabs>
 
-For more information, see the [Python SDK](/docs/python-sdk/sync/sandbox), [TypeScript SDK](/docs/typescript-sdk/sandbox), [API](/docs/en/tools/api/#daytona) and [CLI](/docs/en/tools/cli) references:
+For more information, see the [Python SDK](/docs/en/python-sdk/sync/sandbox), [TypeScript SDK](/docs/en/typescript-sdk/sandbox), [API](/docs/en/tools/api/#daytona) and [CLI](/docs/en/tools/cli) references:
 
-> [**start (Python SDK)**](/docs/python-sdk/sync/sandbox#sandboxstart)
+> [**start (Python SDK)**](/docs/en/python-sdk/sync/sandbox#sandboxstart)
 >
-> [**start (TypeScript SDK)**](/docs/typescript-sdk/sandbox#start)
+> [**start (TypeScript SDK)**](/docs/en/typescript-sdk/sandbox#start)
 >
 > [**start (CLI)**](/docs/en/tools/cli/#daytona-sandbox-start)
 >
@@ -360,11 +360,11 @@ curl https://app.daytona.io/api/sandbox \
 </TabItem>
 </Tabs>
 
-For more information, see the [Python SDK](/docs/python-sdk/sync/sandbox), [TypeScript SDK](/docs/typescript-sdk/sandbox), [API](/docs/en/tools/api/#daytona) and [CLI](/docs/en/tools/cli) references:
+For more information, see the [Python SDK](/docs/en/python-sdk/sync/sandbox), [TypeScript SDK](/docs/en/typescript-sdk/sandbox), [API](/docs/en/tools/api/#daytona) and [CLI](/docs/en/tools/cli) references:
 
-> [**list (Python SDK)**](/docs/python-sdk/sync/sandbox#sandboxlist)
+> [**list (Python SDK)**](/docs/en/python-sdk/sync/sandbox#sandboxlist)
 >
-> [**list (TypeScript SDK)**](/docs/typescript-sdk/sandbox#list)
+> [**list (TypeScript SDK)**](/docs/en/typescript-sdk/sandbox#list)
 >
 > [**list (CLI)**](/docs/en/tools/cli/#daytona-sandbox-list)
 >
@@ -452,7 +452,7 @@ For more information, see the [Python SDK](/docs/en/python-sdk/sync/sandbox), [T
 
 Daytona provides methods to archive sandboxes using Python and TypeScript.
 
-When sandboxes are archived, the entire filesystem state is moved to very cost-effective object storage, making it possible to keep sandboxes available for an extended period.
+When sandboxes are archived, the entire filesystem state is moved to a cost-effective object storage, making it possible to keep sandboxes available for an extended period.
 Starting an archived sandbox takes more time than starting a stopped sandbox, depending on its size.
 
 A sandbox must be stopped before it can be archived, and can be started again in the same way as a stopped sandbox.
@@ -655,7 +655,7 @@ The parameter can either be set to:
 - a time interval in minutes
 - `0`: disables the auto-stop functionality, allowing the sandbox to run indefinitely
 
-If the parameter is not set, the default interval of `15` minutes will be used.
+If the parameter is not set, the default interval of `15 minutes` will be used.
 
 <Tabs syncKey="language">
 <TabItem label="Python" icon="seti:python">
@@ -702,7 +702,7 @@ The parameter can either be set to:
 - a time interval in minutes
 - `0`: means the maximum interval of `30 days` will be used
 
-If the parameter is not set, the default interval of `7 days` days will be used.
+If the parameter is not set, the default interval of `7 days` will be used.
 
 <Tabs syncKey="language">
 <TabItem label="Python" icon="seti:python">
