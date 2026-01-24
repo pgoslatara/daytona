@@ -252,7 +252,7 @@ Daytona provides methods to download files from sandboxes.
 
 #### Download a single file
 
-Daytona provides methods to download a single file from sandboxes. The following snippet downloads a single file `file1.txt` from the sandbox working directory and prints out the content:
+Daytona provides methods to download a single file from sandboxes. The following snippet downloads a single file `file1.txt` from the sandbox working directory and prints the content:
 
 <Tabs syncKey="language">
 <TabItem label="Python" icon="seti:python">
@@ -427,7 +427,6 @@ For more information, see the [Python SDK](/docs/en/python-sdk/), [TypeScript SD
 > 
 > [**setFilePermissions (TypeScript SDK)**](/docs/en/typescript-sdk/file-system/#setfilepermissions)
 >
->
 > [**set file permissions (API)**](/docs/en/tools/api/#daytona-toolbox/tag/file-system/POST/files/permissions)
 
 ### File search and replace
@@ -461,7 +460,7 @@ sandbox.fs.replace_in_files(
 ```typescript
 // Search for text in files; if a folder is specified, the search is recursive
 const results = await sandbox.fs.findFiles({
-    path="workspace/src",
+    path:"workspace/src",
     pattern: "text-of-interest"
 })
 results.forEach(match => {
@@ -551,8 +550,8 @@ curl 'https://proxy.app.daytona.io/toolbox/{sandboxId}/files/move?source=&destin
 
 For more information, see the [Python SDK](/docs/en/python-sdk/), [TypeScript SDK](/docs/en/typescript-sdk/) and [API](/docs/en/tools/api/#daytona-toolbox) references:
 
-> [**move_file (Python SDK)**](/docs/en/python-sdk/sync/file-system/#filesystemmove_files)
+> [**move_files (Python SDK)**](/docs/en/python-sdk/sync/file-system/#filesystemmove_files)
 > 
-> [**moveFile (TypeScript SDK)**](/docs/en/typescript-sdk/file-system/#movefiles)
+> [**moveFiles (TypeScript SDK)**](/docs/en/typescript-sdk/file-system/#movefiles)
 >
-> [**move or rename file (API)**](/docs/en/tools/api/#daytona-toolbox/tag/file-system/POST/files/move)
+> [**move or rename files (API)**](/docs/en/tools/api/#daytona-toolbox/tag/file-system/POST/files/move)
