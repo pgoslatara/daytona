@@ -10,7 +10,7 @@ Daytona provides built-in Git support through the `git` module in sandboxes.
 
 Daytona provides methods to clone, check status, and manage Git repositories in sandboxes.
 
-Similarly to [file system operations](/docs/en/file-system-operations), the starting cloning directory is the current sandbox working directory. It uses the WORKDIR specified in the Dockerfile if present, or falls back to the user's home directory if not - e.g. `workspace/repo` implies `/my-work-dir/workspace/repo`, but you are free to provide an absolute `workDir` path as well (by starting the path with `/`).
+Similar to [file system operations](/docs/en/file-system-operations), the starting cloning directory is the current sandbox working directory. It uses the WORKDIR specified in the Dockerfile if present, or falls back to the user's home directory if not - e.g. `workspace/repo` implies `/my-work-dir/workspace/repo`, but you are free to provide an absolute `workDir` path as well (by starting the path with `/`).
 
 ### Clone repositories
 
@@ -192,7 +192,7 @@ For more information, see the [Python SDK](/docs/en/python-sdk/sync/git), [TypeS
 
 ### Checkout branches
 
-Daytona provides methods to checkout branches in Git repositories. The following snippet checks out the branch called `new-feature`.
+Daytona provides methods to checkout branches in Git repositories. The following snippet checks out the branch called `feature-branch`.
 
 <Tabs syncKey="language">
 <TabItem label="Python" icon="seti:python">
@@ -204,7 +204,7 @@ sandbox.git.checkout_branch("workspace/repo", "feature-branch")
 <TabItem label="TypeScript" icon="seti:typescript">
 ```typescript
 // Checkout a branch
-await git.checkoutBranch('workspace/repo', 'new-feature');
+await git.checkoutBranch('workspace/repo', 'feature-branch');
 ```
 </TabItem>
 <TabItem label="API" icon="seti:json">
@@ -268,7 +268,7 @@ For more information, see the [Python SDK](/docs/en/python-sdk/sync/git), [TypeS
 
 ## Stage changes
 
-Daytona provides methods to stage changes in Git repositories. You can stage specific files, all changes, and commit with a message. The following snippet stages the file `file.txt` and the directory `src`.
+Daytona provides methods to stage changes in Git repositories. You can stage specific files, all changes, and commit with a message. The following snippet stages the file `file.txt` and the `src` directory.
 
 <Tabs syncKey="language">
 <TabItem label="Python" icon="seti:python">
