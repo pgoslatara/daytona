@@ -636,6 +636,7 @@ The auto-stop interval parameter sets the amount of time after which a running s
 
 The inactivity timer resets only for specific external interactions:
 
+- Accessing [sandbox previews](/docs/en/preview-and-authentication) (network requests through preview URLs)
 - Active [SSH connections](/docs/en/ssh-access)
 - [Daytona Toolbox SDK API](/docs/en/tools/api/#daytona-toolbox) calls
 
@@ -643,10 +644,10 @@ The inactivity timer resets only for specific external interactions:
 
 The following do not reset the timer:
 
-- Interactions using [sandbox previews](/docs/en/preview-and-authentication) (network requests through preview URLs)
+- SDK calls that are not toolbox actions
 - Background scripts (e.g., `npm run dev` run as a fire-and-forget command)
 - Long-running tasks without external interaction
-- Processes that don't involve SDK polling or active monitoring
+- Processes that don't involve active monitoring
 
 **Example**: If you run a long-running task like LLM inference that takes more than 15 minutes without any external interaction, the sandbox may auto-stop mid-process because the process itself doesn't count as "activity".
 
