@@ -636,14 +636,14 @@ The auto-stop interval parameter sets the amount of time after which a running s
 
 The inactivity timer resets only for specific external interactions:
 
-- Opened [preview windows](/docs/en/preview-and-authentication)
 - Active [SSH connections](/docs/en/ssh-access)
 - [Daytona Toolbox SDK API](/docs/en/tools/api/#daytona-toolbox) calls
 
 #### What does not reset the timer
 
-Internal processes running in the background do not reset the timer:
+The following do not reset the timer:
 
+- Interactions using [sandbox previews](/docs/en/preview-and-authentication) (network requests through preview URLs)
 - Background scripts (e.g., `npm run dev` run as a fire-and-forget command)
 - Long-running tasks without external interaction
 - Processes that don't involve SDK polling or active monitoring
