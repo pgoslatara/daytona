@@ -21,7 +21,7 @@ RUN python3 -m pip install --no-cache-dir pipx && pipx ensurepath && pipx instal
 # Install Python LSP, daytona and essential pip packages
 RUN python3 -m pip install --no-cache-dir \
     python-lsp-server==1.14.0 \
-    daytona==0.22.0 \
+    daytona==0.134.0 \
     matplotlib==3.10.8 \
     pandas==2.2.3 \
     numpy==2.2.6
