@@ -132,10 +132,10 @@ export class RunnerDto {
   currentStartedSandboxes: number
 
   @ApiPropertyOptional({
-    description: 'Runner availability score',
+    description: 'Runner general availability score',
     example: 85,
   })
-  availabilityScore: number
+  generalAvailability: number
 
   @ApiProperty({
     description: 'The region of the runner',
@@ -226,7 +226,7 @@ export class RunnerDto {
       currentAllocatedDiskGiB: runner.currentAllocatedDiskGiB,
       currentSnapshotCount: runner.currentSnapshotCount,
       currentStartedSandboxes: runner.currentStartedSandboxes,
-      availabilityScore: runner.availabilityScore,
+      generalAvailability: runner.generalAvailability,
       region: runner.region,
       name: runner.name,
       state: runner.state,

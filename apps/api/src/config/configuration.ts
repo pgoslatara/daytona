@@ -159,6 +159,9 @@ const configuration = {
     name: process.env.DEFAULT_RUNNER_NAME,
   },
   runnerScore: {
+    selection: {
+      subsetPercentage: parseInt(process.env.FIND_RUNNER_SUBSET_PERCENTAGE || '33', 10),
+    },
     thresholds: {
       declarativeBuild: parseInt(process.env.RUNNER_DECLARATIVE_BUILD_SCORE_THRESHOLD || '10', 10),
       availability: parseInt(process.env.RUNNER_AVAILABILITY_SCORE_THRESHOLD || '10', 10),
@@ -207,6 +210,19 @@ const configuration = {
         allocDisk: parseInt(process.env.RUNNER_CRITICAL_ALLOC_DISK || '500', 10),
         startedSandboxes: parseInt(process.env.RUNNER_CRITICAL_STARTED_SANDBOXES || '100', 10),
       },
+    },
+  },
+  actionLoad: {
+    points: {
+      unknownStarted: parseInt(process.env.ACTION_LOAD_POINTS_UNKNOWN_STARTED || '20', 10),
+      anyStarted: parseInt(process.env.ACTION_LOAD_POINTS_ANY_STARTED || '10', 10),
+      stoppedStarted: parseInt(process.env.ACTION_LOAD_POINTS_STOPPED_STARTED || '8', 10),
+      startedStopped: parseInt(process.env.ACTION_LOAD_POINTS_STARTED_STOPPED || '2', 10),
+      anyDestroyed: parseInt(process.env.ACTION_LOAD_POINTS_ANY_DESTROYED || '2', 10),
+    },
+    penalty: {
+      divisor: parseInt(process.env.ACTION_LOAD_PENALTY_DIVISOR || '100', 10),
+      maximum: parseInt(process.env.ACTION_LOAD_PENALTY_MAXIMUM || '20', 10),
     },
   },
   rateLimit: {

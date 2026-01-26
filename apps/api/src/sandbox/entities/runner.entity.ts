@@ -119,7 +119,17 @@ export class Runner {
   @Column({
     default: 0,
   })
-  availabilityScore: number
+  generalAvailability: number
+
+  @Column({
+    default: 0,
+  })
+  actionLoadPoints: number
+
+  @Column({
+    default: 0,
+  })
+  actionLoadPenalty: number
 
   @Column()
   region: string

@@ -21,8 +21,13 @@ import { CreateRunnerInternalDto } from '../dto/create-runner-internal.dto'
 import { SandboxClass } from '../enums/sandbox-class.enum'
 import { RunnerState } from '../enums/runner-state.enum'
 import { BadRequestError } from '../../exceptions/bad-request.exception'
-import { EventEmitter2 } from '@nestjs/event-emitter'
+import { EventEmitter2, OnEvent } from '@nestjs/event-emitter'
 import { SandboxState } from '../enums/sandbox-state.enum'
+import { SandboxDesiredState } from '../enums/sandbox-desired-state.enum'
+import { SandboxEvents } from '../constants/sandbox-events.constants'
+import { SandboxStateUpdatedEvent } from '../events/sandbox-state-updated.event'
+import { InjectRedis } from '@nestjs-modules/ioredis'
+import { Redis } from 'ioredis'
 import { Sandbox } from '../entities/sandbox.entity'
 import { SnapshotRunner } from '../entities/snapshot-runner.entity'
 import { SnapshotRunnerState } from '../enums/snapshot-runner-state.enum'
@@ -65,6 +70,7 @@ export class RunnerService {
     @Inject(EventEmitter2)
     private eventEmitter: EventEmitter2,
     private readonly dataSource: DataSource,
+    @InjectRedis() private readonly redis: Redis,
   ) {
     this.scoreConfig = this.getAvailabilityScoreConfig()
   }
@@ -257,7 +263,7 @@ export class RunnerService {
     const runnerFilter: FindOptionsWhere<Runner> = {
       state: RunnerState.READY,
       unschedulable: Not(true),
-      availabilityScore: params.availabilityScoreThreshold
+      generalAvailability: params.availabilityScoreThreshold
         ? MoreThanOrEqual(params.availabilityScoreThreshold)
         : MoreThanOrEqual(this.configService.getOrThrow('runnerScore.thresholds.availability')),
     }
@@ -301,7 +307,23 @@ export class RunnerService {
       where: runnerFilter,
     })
 
-    return runners.sort((a, b) => b.availabilityScore - a.availabilityScore).slice(0, 10)
+    // Sort by generalAvailability and get configured percentage
+    const sortedRunners = runners.sort((a, b) => b.generalAvailability - a.generalAvailability)
+    const subsetPercentage = this.configService.getOrThrow('runnerScore.selection.subsetPercentage')
+    const subsetCount = Math.max(10, Math.ceil((sortedRunners.length * subsetPercentage) / 100))
+    const filteredRunners = sortedRunners.slice(0, subsetCount)
+
+    // Fetch action load penalties from Redis only for filtered runners
+    const runnerIds = filteredRunners.map((r) => r.id)
+    const actionLoadPenalties = await this.getActionLoadPenalties(runnerIds)
+
+    // Apply penalties and re-sort by effective score
+    const runnersWithPenalty = filteredRunners.map((runner) => ({
+      runner,
+      effectiveScore: runner.generalAvailability - (actionLoadPenalties.get(runner.id) || 0),
+    }))
+
+    return runnersWithPenalty.sort((a, b) => b.effectiveScore - a.effectiveScore).map((r) => r.runner)
   }
 
   /**
@@ -405,7 +427,7 @@ export class RunnerService {
       updateData.memoryGiB = metrics.memoryGiB
       updateData.diskGiB = metrics.diskGiB
 
-      updateData.availabilityScore = this.calculateAvailabilityScore(runnerId, {
+      updateData.generalAvailability = this.calculateAvailabilityScore(runnerId, {
         cpuLoadAverage: updateData.currentCpuLoadAverage,
         cpuUsage: updateData.currentCpuUsagePercentage,
         memoryUsage: updateData.currentMemoryUsagePercentage,
@@ -887,6 +909,216 @@ export class RunnerService {
         ],
       },
     }
+  }
+
+  // Action Load Methods
+
+  /**
+   * Handle sandbox state updates to decrement action load when pending is resolved
+   */
+  @OnEvent(SandboxEvents.STATE_UPDATED)
+  async handleSandboxStateUpdatedForActionLoad(event: SandboxStateUpdatedEvent): Promise<void> {
+    const { sandbox, oldState, newState } = event
+
+    // Only decrement if the sandbox has a runner assigned
+    if (!sandbox.runnerId) {
+      return
+    }
+
+    // Check if sandbox was pending (state !== desiredState) and is now resolved
+    const wasPending = oldState !== sandbox.desiredState.toString()
+    const isNowResolved =
+      newState === sandbox.desiredState.toString() ||
+      newState === SandboxState.ERROR ||
+      newState === SandboxState.BUILD_FAILED
+
+    if (wasPending && isNowResolved) {
+      const points = this.calculateActionLoadPoints(oldState as SandboxState, sandbox.desiredState)
+      if (points > 0) {
+        await this.decrementActionLoad(sandbox.runnerId, points)
+        this.logger.debug(
+          `Decremented action load for runner ${sandbox.runnerId} by ${points} points after sandbox ${sandbox.id} transitioned from ${oldState} to ${newState}`,
+        )
+      }
+    }
+  }
+
+  /**
+   * Get the Redis key for storing action load for a runner
+   */
+  private getActionLoadRedisKey(runnerId: string): string {
+    return `runner:${runnerId}:actionLoad`
+  }
+
+  /**
+   * Calculate the action load points for a given state and desired state combination
+   */
+  calculateActionLoadPoints(state: SandboxState, desiredState: SandboxDesiredState): number {
+    const points = this.configService.getOrThrow('actionLoad.points')
+
+    // <any> | destroyed = anyDestroyed points
+    if (desiredState === SandboxDesiredState.DESTROYED) {
+      return points.anyDestroyed
+    }
+
+    // started | stopped = startedStopped points
+    if (state === SandboxState.STARTED && desiredState === SandboxDesiredState.STOPPED) {
+      return points.startedStopped
+    }
+
+    // For desiredState = started
+    if (desiredState === SandboxDesiredState.STARTED) {
+      // unknown | started = unknownStarted points
+      if (state === SandboxState.UNKNOWN) {
+        return points.unknownStarted
+      }
+
+      // stopped | started = stoppedStarted points
+      if (state === SandboxState.STOPPED) {
+        return points.stoppedStarted
+      }
+
+      // any other state | started = anyStarted points
+      return points.anyStarted
+    }
+
+    return 0
+  }
+
+  /**
+   * Increment the action load for a runner in Redis when a sandbox is assigned
+   */
+  async incrementActionLoad(runnerId: string, state: SandboxState, desiredState: SandboxDesiredState): Promise<void> {
+    const points = this.calculateActionLoadPoints(state, desiredState)
+    if (points === 0) {
+      return
+    }
+
+    const key = this.getActionLoadRedisKey(runnerId)
+    const ttlSeconds = 300 // 5 minutes TTL as safeguard
+
+    const script = `
+      local key = KEYS[1]
+      local increment = tonumber(ARGV[1])
+      local ttl = tonumber(ARGV[2])
+      local divisor = tonumber(ARGV[3])
+      local maximum = tonumber(ARGV[4])
+
+      local currentLoad = tonumber(redis.call("GET", key)) or 0
+      local newLoad = currentLoad + increment
+      redis.call("SET", key, newLoad, "EX", ttl)
+
+      local penalty = math.floor(newLoad / divisor)
+      if penalty > maximum then
+        penalty = maximum
+      end
+
+      return {newLoad, penalty}
+    `
+
+    const divisor = this.configService.getOrThrow('actionLoad.penalty.divisor')
+    const maximum = this.configService.getOrThrow('actionLoad.penalty.maximum')
+
+    const result = (await this.redis.eval(
+      script,
+      1,
+      key,
+      points.toString(),
+      ttlSeconds.toString(),
+      divisor.toString(),
+      maximum.toString(),
+    )) as [number, number]
+
+    const [newLoad, penalty] = result
+
+    // Update the runner table with the current action load values
+    await this.runnerRepository.update(runnerId, {
+      actionLoadPoints: newLoad,
+      actionLoadPenalty: penalty,
+    })
+  }
+
+  /**
+   * Decrement the action load for a runner in Redis when a sandbox transitions out of pending
+   */
+  async decrementActionLoad(runnerId: string, points: number): Promise<void> {
+    if (points === 0) {
+      return
+    }
+
+    const key = this.getActionLoadRedisKey(runnerId)
+    const ttlSeconds = 300 // 5 minutes TTL as safeguard
+
+    const script = `
+      local key = KEYS[1]
+      local decrement = tonumber(ARGV[1])
+      local ttl = tonumber(ARGV[2])
+      local divisor = tonumber(ARGV[3])
+      local maximum = tonumber(ARGV[4])
+
+      local currentLoad = tonumber(redis.call("GET", key)) or 0
+      local newLoad = currentLoad - decrement
+      if newLoad < 0 then
+        newLoad = 0
+      end
+
+      if newLoad > 0 then
+        redis.call("SET", key, newLoad, "EX", ttl)
+      else
+        redis.call("DEL", key)
+      end
+
+      local penalty = math.floor(newLoad / divisor)
+      if penalty > maximum then
+        penalty = maximum
+      end
+
+      return {newLoad, penalty}
+    `
+
+    const divisor = this.configService.getOrThrow('actionLoad.penalty.divisor')
+    const maximum = this.configService.getOrThrow('actionLoad.penalty.maximum')
+
+    const result = (await this.redis.eval(
+      script,
+      1,
+      key,
+      points.toString(),
+      ttlSeconds.toString(),
+      divisor.toString(),
+      maximum.toString(),
+    )) as [number, number]
+
+    const [newLoad, penalty] = result
+
+    // Update the runner table with the current action load values
+    await this.runnerRepository.update(runnerId, {
+      actionLoadPoints: newLoad,
+      actionLoadPenalty: penalty,
+    })
+  }
+
+  /**
+   * Get action load penalties for multiple runners in a single Redis call
+   */
+  async getActionLoadPenalties(runnerIds: string[]): Promise<Map<string, number>> {
+    if (runnerIds.length === 0) {
+      return new Map()
+    }
+
+    const keys = runnerIds.map((id) => this.getActionLoadRedisKey(id))
+    const values = await this.redis.mget(keys)
+
+    const penalties = new Map<string, number>()
+    const divisor = this.configService.getOrThrow('actionLoad.penalty.divisor')
+    const maximum = this.configService.getOrThrow('actionLoad.penalty.maximum')
+
+    runnerIds.forEach((id, index) => {
+      const actionLoad = parseInt(values[index] || '0', 10)
+      penalties.set(id, Math.min(Math.floor(actionLoad / divisor), maximum))
+    })
+
+    return penalties
   }
 }
 

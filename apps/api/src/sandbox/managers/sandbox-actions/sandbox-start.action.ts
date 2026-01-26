@@ -163,6 +163,7 @@ export class SandboxStartAction extends SandboxAction {
           }),
       })
       if (runner) {
+        await this.runnerService.incrementActionLoad(runner.id, sandbox.state, sandbox.desiredState)
         await this.updateSandboxState(sandbox.id, SandboxState.UNKNOWN, lockCode, runner.id)
         return SYNC_AGAIN
       }
@@ -179,8 +180,12 @@ export class SandboxStartAction extends SandboxAction {
     for (const snapshotRunner of snapshotRunners) {
       // Consider removing the runner usage rate check or improving it
       const runner = await this.runnerService.findOne(snapshotRunner.runnerId)
-      if (declarativeBuildScoreThreshold === undefined || runner.availabilityScore >= declarativeBuildScoreThreshold) {
+      if (
+        declarativeBuildScoreThreshold === undefined ||
+        runner.generalAvailability >= declarativeBuildScoreThreshold
+      ) {
         if (snapshotRunner.state === targetState) {
+          await this.runnerService.incrementActionLoad(runner.id, sandbox.state, sandbox.desiredState) // todo: check, target?
           await this.updateSandboxState(sandbox.id, targetSandboxState, lockCode, runner.id)
           return SYNC_AGAIN
         } else if (snapshotRunner.state === SnapshotRunnerState.ERROR) {
@@ -214,6 +219,9 @@ export class SandboxStartAction extends SandboxAction {
       await new Promise((resolve) => setTimeout(resolve, 3000))
       return SYNC_AGAIN
     }
+
+    // Increment action load for the newly assigned runner
+    await this.runnerService.incrementActionLoad(runner.id, sandbox.state, sandbox.desiredState)
 
     if (isBuild) {
       this.buildOnRunner(sandbox.buildInfo, runner, sandbox.organizationId)
@@ -320,6 +328,8 @@ export class SandboxStartAction extends SandboxAction {
       return DONT_SYNC_AGAIN
     }
 
+    await this.runnerService.incrementActionLoad(runner.id, sandbox.state, sandbox.desiredState)
+
     const organization = await this.organizationService.findOne(sandbox.organizationId)
 
     const runnerAdapter = await this.runnerAdapterFactory.create(runner)
@@ -383,7 +393,9 @@ export class SandboxStartAction extends SandboxAction {
       const startScoreThreshold = this.configService.get('runnerScore.thresholds.start') || 0
 
       const shouldMoveToNewRunner =
-        (runner.unschedulable || runner.state != RunnerState.READY || runner.availabilityScore < startScoreThreshold) &&
+        (runner.unschedulable ||
+          runner.state != RunnerState.READY ||
+          runner.generalAvailability < startScoreThreshold) &&
         sandbox.backupState === BackupState.COMPLETED
 
       // if the runner is unschedulable/not ready and sandbox has a valid backup, move sandbox to a new runner
@@ -400,7 +412,7 @@ export class SandboxStartAction extends SandboxAction {
       // If the sandbox is on a runner and its backupState is COMPLETED
       // but there are too many running sandboxes on that runner, move it to a less used runner
       if (sandbox.backupState === BackupState.COMPLETED) {
-        if (runner.availabilityScore < this.configService.getOrThrow('runnerScore.thresholds.availability')) {
+        if (runner.generalAvailability < this.configService.getOrThrow('runnerScore.thresholds.availability')) {
           const availableRunners = await this.runnerService.findAvailableRunners({
             regions: [sandbox.region],
             sandboxClass: sandbox.class,
